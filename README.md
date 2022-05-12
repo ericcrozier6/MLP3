@@ -1,5 +1,7 @@
 # Machine learning project 3
 
+## SVM
+
 The jupyter notebook SVM can be run to create the SVM, get the raw
 signal data from the testing/training data sets. 
 Then we train the SVM with the testing data and its correct
