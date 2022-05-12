@@ -15,6 +15,6 @@ train_data = np.delete(train_data, 0, axis=0)
 
 train_labels = pd.read_csv(os.path.abspath("./MusicData/train.csv")).sort_values(by="new_id").to_numpy()[:,1].tolist()
 
-train_data = np.hstack((train_data, train_labels))
+train_data = np.append(train_data, train_labels, axis=1)
 
 sp.sparse.save_npz("fullyConnectedTrainData.npz", sp.sparse.csr_matrix(train_data))
