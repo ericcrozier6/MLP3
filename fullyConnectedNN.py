@@ -10,17 +10,20 @@ import scipy as sp
 batch_size = 32
 
 #read in the training data from our npz
-data = sp.sparse.load_npz("fullyConnectedTrainData.npz").toarray()
+data = sp.sparse.load_npz("trainingMFCC.npz").toarray()
 
-#seperate data and labels
-train_data = data[:, :len(data)]
-train_labels = data[:, len(data)]
+#create data and labels
+train_data = data
+train_labels = pd.read_csv(os.path.abspath("./MusicData/train.csv")).sort_values(by="new_id").to_numpy()[:,1]
 
 #create train dataset
 train_ds = tf.data.Dataset.from_tensor_slices((train_data, train_labels))
 
 #create test dataset
-test_ds = tf.data.Dataset.from_tensor_slices(sp.sparse.load_npz("fullyConnectedTestData.npz"))
+test_ds = tf.data.Dataset.from_tensor_slices(sp.sparse.load_npz("testingMFCC.npz").toarray())
+
+train_ds = train_ds.batch(batch_size)
+test_ds = test_ds.batch(batch_size)
 
 #our model
 model = tf.keras.Sequential([
@@ -37,9 +40,9 @@ model = tf.keras.Sequential([
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
-model.fit(train_ds, epochs=10)
+model.fit(train_ds, epochs=10000)
 
 #predict
 predictions = model.predict(test_ds)
 #save predictions
-np.savetxt("fullConnectedNNPredictions.csv", predictions, delimiter=",", header=None)
+np.savetxt("fullConnectedNNPredictions.csv", predictions, delimiter=",")
